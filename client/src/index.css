@@ -1,0 +1,175 @@
+:root {
+  /* Paleta de Colores: "Swiss Style" / Clean Red & Beige */
+  --color-bg: #F5F3EF;       /* Beige muy suave, casi blanco, cómodo a la vista */
+  --color-text: #222222;     /* Gris muy oscuro, mejor contraste que el negro puro */
+  --color-accent: #D32F2F;   /* Rojo Profundo, elegante y académico */
+  --color-accent-hover: #B71C1C;
+  --color-border: #E0E0E0;   /* Bordes sutiles */
+  --color-white: #FFFFFF;
+  
+  --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --radius: 6px;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Animaciones de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  font-weight: 700;
+  letter-spacing: -0.5px; /* Tracking moderno */
+}
+
+a {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+/* Botones: Estilo Clean & Fluid */
+.btn, button {
+  display: inline-block;
+  background-color: var(--color-accent);
+  color: var(--color-white) !important;
+  border: none;
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: var(--shadow-sm);
+  text-transform: none; /* Más amigable que uppercase */
+  letter-spacing: 0.5px;
+}
+
+.btn:hover, button:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent) !important;
+  box-shadow: none;
+}
+
+.btn-outline:hover {
+  background-color: var(--color-accent);
+  color: var(--color-white) !important;
+  transform: translateY(-2px);
+}
+
+.btn:disabled, button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Inputs Clean */
+input, select, textarea {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  padding: 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-text);
+  border-radius: var(--radius);
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+}
+
+/* Contenedores */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Tarjetas Fluidas */
+.card {
+  background-color: var(--color-white);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(211, 47, 47, 0.1);
+}
+
+/* Navbar Minimalista */
+nav {
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-borrador { background-color: #F5F5F5; color: #666; }
+.status-enviado { background-color: #FFF8E1; color: #F57F17; }
+.status-aprobado { background-color: #E8F5E9; color: #2E7D32; }
+.status-rechazado { background-color: #FFEBEE; color: #C62828; }
+
+/* Indicador DB */
+.db-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+.db-online { background-color: #2ECC71; box-shadow: 0 0 8px rgba(46, 204, 113, 0.4); }
+.db-offline { background-color: #E74C3C; }
