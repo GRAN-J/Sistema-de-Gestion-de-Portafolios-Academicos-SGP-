@@ -22,10 +22,10 @@ const sendResetEmail = async (email, resetUrl) => {
     transporter = nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
-      secure: false, // true for 465, false for other ports
+      secure: false, // true para 465, false para otros puertos
       auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
+        user: testAccount.user, // usuario generado por ethereal
+        pass: testAccount.pass, // contraseña generada por ethereal
       },
     });
   } else {

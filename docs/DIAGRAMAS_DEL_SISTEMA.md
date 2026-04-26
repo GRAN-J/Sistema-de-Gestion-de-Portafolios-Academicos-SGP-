@@ -1,13 +1,11 @@
 # 📊 Diagramas del Sistema SGP (Mermaid)
 
-Este documento contiene la definición técnica de los diagramas del sistema. La sintaxis ha sido validada para ser compatible con la mayoría de los renderizadores Mermaid.
+Este documento contiene la definición técnica de los diagramas del sistema.
 
 ---
 
 ## 1️⃣ Diagrama de Casos de Uso
 Describe las funcionalidades disponibles para cada rol (Actor) y sus interacciones con el sistema.
-
-El diagrama de casos de uso representa las funcionalidades principales del Sistema de Gestión de Portafolios Académicos y las interacciones de los diferentes actores con la plataforma.
 
 ```mermaid
 graph TD
@@ -15,7 +13,7 @@ graph TD
     classDef actor fill:#ffffff,stroke:#000000,stroke-width:2px;
     classDef usecase fill:#ffffff,stroke:#000000,stroke-width:1px,rx:20,ry:20;
 
-    %% Actores (Fuera del límite del sistema)
+    %% Actores
     Estudiante["👤<br/>Estudiante"]:::actor
     Docente["👤<br/>Docente"]:::actor
     Coordinador["👤<br/>Coordinador"]:::actor
@@ -29,37 +27,25 @@ graph TD
         UC2([Iniciar Sesión]):::usecase
         UC3([Recuperar Contraseña]):::usecase
         
-        %% Enlace invisible para orden vertical
-        UC2 ~~~ UC4
-
         %% Grupo Estudiante
         UC4([Crear Portafolio]):::usecase
         UC5([Subir Archivos]):::usecase
         UC6([Enviar a Revisión]):::usecase
         UC7([Ver Mis Portafolios]):::usecase
         
-        %% Enlace invisible
-        UC7 ~~~ UC8
-
         %% Grupo Docente
         UC8([Ver Asignados]):::usecase
         UC9([Descargar Archivo]):::usecase
         UC10([Evaluar Proyecto]):::usecase
         UC11([Realizar Observaciones]):::usecase
         
-        %% Enlace invisible
-        UC11 ~~~ UC12
-
         %% Grupo Coordinador
         UC12([Ver Estadísticas]):::usecase
         UC13([Gestionar Asignaciones]):::usecase
         UC14([Listar Todos]):::usecase
     end
     
-    %% Estilo del límite del sistema
-    style Sistema fill:#f9f9f9,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5
-
-    %% Relaciones (Cruzando el límite)
+    %% Relaciones
     Estudiante --> UC1
     Estudiante --> UC2
     Estudiante --> UC3
@@ -87,14 +73,13 @@ graph TD
 ---
 
 ## 2️⃣ Diagrama de Clases
-Representa la estructura de datos (Modelo) y las relaciones entre entidades del sistema.
+Representa la estructura de datos (Modelo) y las relaciones entre entidades.
 
 ```mermaid
 classDiagram
     direction LR
     
-    %% Definición de Clases
-    class User {
+    class Usuario {
         +ObjectId _id
         +String nombre
         +String correo
@@ -103,7 +88,7 @@ classDiagram
         +ObjectId docenteAsignado
     }
 
-    class Portfolio {
+    class Portafolio {
         +ObjectId _id
         +String titulo
         +String descripcion
@@ -114,25 +99,23 @@ classDiagram
     }
 
     class Archivo {
-        <<Subdocument>>
+        <<Subdocumento>>
         +String nombreOriginal
         +String ruta
         +String tipo
     }
 
     %% Relaciones
-    User "1" --> "0..*" Portfolio : Autor (Estudiante)
-    Portfolio "0..*" --> "0..1" User : Revisor (Docente)
-    Portfolio "1" *-- "0..*" Archivo : Contiene
-
-    %% Relación Reflexiva (Auto-referencia)
-    User "0..*" --> "0..1" User : docenteAsignado (Supervisa)
+    Usuario "1" --> "0..*" Portafolio : Autor (Estudiante)
+    Portafolio "0..*" --> "0..1" Usuario : Revisor (Docente)
+    Portafolio "1" *-- "0..*" Archivo : Contiene
+    Usuario "0..*" --> "0..1" Usuario : docenteAsignado (Supervisa)
 ```
 
 ---
 
 ## 3️⃣ Diagrama de Estados (Portafolio)
-Muestra el ciclo de vida y las transiciones de estado de un proyecto académico.
+Muestra el ciclo de vida de un proyecto académico.
 
 ```mermaid
 stateDiagram-v2
@@ -145,39 +128,39 @@ stateDiagram-v2
     Enviado --> Aprobado : Docente aprueba
     Enviado --> Rechazado : Docente rechaza
     
-    Rechazado --> [*] : Fin del ciclo
     Rechazado --> Borrador : Docente habilita edición
+    Rechazado --> [*]
     
     Aprobado --> [*]
 ```
 
 ---
 
-## 4️⃣ Diagrama de Secuencia
-Detalla la interacción temporal de objetos durante el **Envío de un Portafolio**.
+## 4️⃣ Diagrama de Secuencia (Envío de Portafolio)
+Detalla la interacción temporal de objetos.
 
 ```mermaid
 sequenceDiagram
     participant Estudiante
     participant Frontend
     participant API as "Backend API"
-    participant DB as "MongoDB"
-    participant FS as "FileSystem"
+    participant DB as "Base de Datos"
+    participant FS as "Sistema de Archivos"
 
     Estudiante->>Frontend: Click "Guardar Cambios"
     Frontend->>API: POST /api/portfolios (FormData)
     
     activate API
-    API->>API: Validar Token (Auth)
+    API->>API: Validar Token (Autenticación)
     API->>FS: Guardar Archivo (Multer)
-    FS-->>API: Retorna Metadata Archivo
+    FS-->>API: Retorna Metadatos
     
-    API->>DB: Buscar Usuario (verificar docenteAsignado)
+    API->>DB: Buscar Usuario (verificar asignación)
     DB-->>API: Retorna ID Docente
     
-    API->>DB: Create Portfolio (con ID Docente implícito)
-    DB-->>API: Confirmación (Documento)
-    API-->>Frontend: 201 Created
+    API->>DB: Crear Portafolio
+    DB-->>API: Confirmación
+    API-->>Frontend: 201 Creado
     deactivate API
     
     Frontend-->>Estudiante: Mensaje "Proyecto Guardado"
@@ -186,27 +169,27 @@ sequenceDiagram
 ---
 
 ## 5️⃣ Diagrama de Componentes
-Describe la arquitectura de software, módulos y sus dependencias.
+Arquitectura de software y módulos.
 
 ```mermaid
 graph TD
     subgraph "Cliente (Frontend)"
-        ReactApp[React App]
-        Axios[Axios Service]
-        AuthCtx[Auth Context]
+        ReactApp[App React]
+        Axios[Servicio Axios]
+        AuthCtx[Contexto de Autenticación]
     end
 
     subgraph "Servidor (Backend)"
-        Express[Express Server]
-        AuthCtrl[Auth Controller]
-        PortCtrl[Portfolio Controller]
-        UserCtrl[User Controller]
-        Multer[Multer Middleware]
+        Express[Servidor Express]
+        AuthCtrl[Controlador de Autenticación]
+        PortCtrl[Controlador de Portafolios]
+        UserCtrl[Controlador de Usuarios]
+        Multer[Middleware de Carga]
     end
 
     subgraph "Persistencia"
         MongoDB[(MongoDB)]
-        FS[FileSystem /uploads]
+        FS[Sistema de Archivos /uploads]
     end
 
     ReactApp --> AuthCtx
@@ -227,48 +210,34 @@ graph TD
 
 ---
 
-## 6️⃣ Diagrama de Despliegue
-Representa la distribución física de los artefactos de software en los nodos de ejecución.
+## 6️⃣ Diagrama de Distribución (Despliegue)
+Infraestructura física y distribución de componentes.
 
 ```mermaid
 graph TD
-    subgraph "Nodo Cliente"
-        Browser[Navegador Web]
+    %% Definición de Nodos
+    subgraph Cliente ["💻 Dispositivo Cliente"]
+        direction TB
+        Browser["🌐 Navegador Web"]
+        ReactApp["⚛️ App React (SPA)"]
     end
 
-    subgraph "Nodo Servidor de Aplicaciones"
-        NodeJS[Node.js Runtime]
-        API[Express API]
-        Uploads[Folder: /uploads]
+    subgraph AppServer ["🚀 Servidor de Aplicaciones"]
+        direction TB
+        API["⚙️ Backend: Express API"]
+        NodeJS["🟢 Runtime: Node.js"]
+        Uploads["📂 Almacenamiento: /uploads"]
     end
 
-    subgraph "Nodo Servidor de Datos"
-        DB[(MongoDB Database)]
+    subgraph DBServer ["🗄️ Servidor de Datos"]
+        direction TB
+        DB[("🍃 MongoDB (NoSQL)")]
     end
 
-    Browser -- "HTTP/HTTPS (Puerto 3000/5000)" --> API
-    NodeJS -- "Ejecuta" --> API
-    API -- "TCP/IP (Puerto 27017)" --> DB
-    API -- "I/O (Lectura/Escritura)" --> Uploads
-```
-
----
-
-## 7️⃣ Diagrama de Colaboración
-Enfocado en la interacción entre objetos para el proceso de **Asignación de Docente**.
-
-```mermaid
-graph TD
-    Coordinador((Coordinador))
-    Front[Frontend: Asignaciones]
-    API[API: PUT /assign-teacher]
-    DB[(MongoDB: Users)]
-
-    Coordinador -- 1. Selecciona Estudiante y Docente --> Front
-    Front -- 2. Envía IDs --> API
-    API -- 3. Busca Estudiante --> DB
-    API -- 4. Actualiza campo docenteAsignado --> DB
-    DB -- 5. Confirma actualización --> API
-    API -- 6. Respuesta 200 OK --> Front
-    Front -- 7. Muestra Check Verde --> Coordinador
+    %% Conexiones
+    Browser <-->|"Puerto 5000 (HTTPS)"| API
+    ReactApp <-->|"Peticiones REST"| API
+    
+    API <-->|"Puerto 27017"| DB
+    API <-->|"Acceso a Archivos"| Uploads
 ```
