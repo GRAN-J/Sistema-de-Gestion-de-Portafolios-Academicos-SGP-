@@ -216,22 +216,22 @@ Infraestructura física y distribución de componentes.
 ```mermaid
 graph TD
     %% Definición de Nodos
-    subgraph Cliente ["💻 Dispositivo Cliente"]
+    subgraph Cliente ["Dispositivo Cliente"]
         direction TB
-        Browser["🌐 Navegador Web"]
-        ReactApp["⚛️ App React (SPA)"]
+        Browser["Navegador Web"]
+        ReactApp["App React (SPA)"]
     end
 
-    subgraph AppServer ["🚀 Servidor de Aplicaciones"]
+    subgraph AppServer ["Servidor de Aplicaciones"]
         direction TB
-        API["⚙️ Backend: Express API"]
-        NodeJS["🟢 Runtime: Node.js"]
-        Uploads["📂 Almacenamiento: /uploads"]
+        API["Backend: Express API"]
+        NodeJS["Runtime: Node.js"]
+        Uploads["Almacenamiento: /uploads"]
     end
 
-    subgraph DBServer ["🗄️ Servidor de Datos"]
+    subgraph DBServer ["Servidor de Datos"]
         direction TB
-        DB[("🍃 MongoDB (NoSQL)")]
+        DB[("MongoDB (NoSQL)")]
     end
 
     %% Conexiones
